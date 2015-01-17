@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="exportRequirement" resultType="info.woody.so.bean.RequirementBean">
+		select id, corp, lct.val location, target, manager, position, quantity, sts.val status, hr, comment, createAt, createBy, updateAt, updateBy
+		  from soRequirement rqm
+		  left join (select name, val from soLookup where category = 'requirement.location') lct on rqm.location = lct.name
+		  left join (select name, val from soLookup where category = 'requirement.status'  ) sts on rqm.status = sts.name
+		 order by createAt desc
+	</select>
+	<select id="selectRequirement" resultType="info.woody.so.bean.RequirementBean">
+		select id, corp, location, target, manager, position, quantity, status, hr, comment, createAt, createBy, updateAt, updateBy
+		  from soRequirement
+		 order by createAt desc
+	</select>
+	<select id="selectRequirementRowCount" resultType="int">
+		select count(1) from soRequirement
+	</select>
+
+	<insert id="insertRequirement" parameterType="info.woody.so.bean.RequirementBean" useGeneratedKeys="true" keyProperty="id">
+		insert into soRequirement (corp, location, target, manager, position, quantity, status, hr, comment)
+		values ( #{corp,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{target,jdbcType=VARCHAR}, #{manager,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, #{quantity,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{hr,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR} )
+	</insert>
+
+	<update id="updateRequirement" parameterType="info.woody.so.bean.RequirementBean">
+		update soRequirement
+		   set corp     = #{corp,     jdbcType=VARCHAR},
+               location = #{location, jdbcType=VARCHAR},
+               target   = #{target,   jdbcType=VARCHAR},
+               manager  = #{manager,  jdbcType=VARCHAR},
+               position = #{position, jdbcType=VARCHAR},
+               quantity = #{quantity, jdbcType=INTEGER},
+               status   = #{status,   jdbcType=VARCHAR},
+               hr       = #{hr,       jdbcType=VARCHAR},
+               comment  = #{comment,  jdbcType=VARCHAR},
+               updateAt = CURRENT_TIMESTAMP
+		 where id = #{id}
+	</update>
+
+	<delete id="deleteRequirement" parameterType="int">
+		delete from soRequirement where id = #{id}
+	</delete>
+</mapper>

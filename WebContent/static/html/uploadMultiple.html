@@ -1,0 +1,42 @@
+<html>
+<head>
+<title>Upload Multiple File Request Page</title>
+</head>
+<body style="font-size: 14px;">
+<form method="POST" action="/so/rest/uploadMultipleFile" enctype="multipart/form-data"></form>
+<script type="text/javascript" src="/so/static/js/jquery.min.js"></script>
+<script type="text/javascript">
+function addFileControl() {
+	$('form').append($('#templateUploadFile').html());
+}
+function uploadNow() {
+	// check empty
+	var hasErrors = false;
+	$('input[type="file"]').each(function (i, e) {
+		e.style.color = '';
+		if (!e.value) {
+			e.style.color = 'red';
+			hasErrors = true;
+		}
+	});
+	if (hasErrors) {
+		return;
+	}
+	document.getElementsByTagName('form')[0].submit();
+	return true;
+}
+function resetAll() {
+	$('a').click();
+	$('form').html('<input type="file" name="file" />');
+}
+$(resetAll);
+</script>
+<script type="text/so-template" id="templateUploadFile">
+<div>
+<input type="file" name="file" />
+<!--<input type="text" name="name" />-->
+<a href="javascript:void(0);" onclick="$(this).parent().remove()">Remove</a>
+</div>
+</script>
+</body>
+</html>

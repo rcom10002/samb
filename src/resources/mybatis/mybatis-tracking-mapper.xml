@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="selectTracking" resultType="info.woody.so.bean.TrackingBean">
+		select id                                ,
+		       soLinked.val as "_toRequirement"  ,
+		       toRequirement                     ,
+			   candidate                         ,
+			   phone                             ,
+			   hr                                ,
+			   workLocation                      ,
+			   skill                             ,
+			   experience                        ,
+			   language                          ,
+			   employer                          ,
+			   level                             ,
+			   remarks                           ,
+			   toSubmitResumeAt                  ,
+			   interviewResult                   ,
+			   interviewTime                     ,
+			   expectedSalary                    ,
+			   files                             ,
+			   createAt                          ,
+			   createBy                          ,
+			   updateAt                          ,
+			   updateBy
+		  from soTracking
+		  left join soLinked on (soTracking.toRequirement = soLinked.name and soLinked.entity = 'requirement')
+		 order by soTracking.createAt desc
+	</select>
+	<select id="selectTrackingRowCount" resultType="int">
+		select count(1)
+		  from soTracking
+		  left join soLinked on (soTracking.toRequirement = soLinked.name and soLinked.entity = 'requirement')
+	</select>
+
+	<insert id="insertTracking" parameterType="info.woody.so.bean.TrackingBean" useGeneratedKeys="true" keyProperty="id">
+		insert into soTracking
+		(
+        toRequirement   ,
+		candidate       ,
+		phone           ,
+		hr              ,
+		workLocation    ,
+		skill           ,
+		experience      ,
+		language        ,
+		employer        ,
+		level           ,
+		remarks         ,
+		toSubmitResumeAt,
+		interviewResult ,
+		interviewTime   ,
+		expectedSalary  ,
+		files
+		)
+		values
+		(
+		#{toRequirement    , jdbcType=INTEGER   },
+		#{candidate        , jdbcType=VARCHAR   },
+		#{phone            , jdbcType=VARCHAR   },
+		#{hr               , jdbcType=VARCHAR   },
+		#{workLocation     , jdbcType=VARCHAR   },
+		#{skill            , jdbcType=VARCHAR   },
+		#{experience       , jdbcType=INTEGER   },
+		#{language         , jdbcType=VARCHAR   },
+		#{employer         , jdbcType=VARCHAR   },
+		#{level            , jdbcType=VARCHAR   },
+		#{remarks          , jdbcType=VARCHAR   },
+		#{toSubmitResumeAt , jdbcType=TIMESTAMP },
+		#{interviewResult  , jdbcType=VARCHAR   },
+		#{interviewTime    , jdbcType=TIMESTAMP },
+		#{expectedSalary   , jdbcType=INTEGER   },
+		#{files            , jdbcType=VARCHAR   }
+		)
+	</insert>
+
+	<update id="updateTracking" parameterType="info.woody.so.bean.TrackingBean">
+		update soTracking
+		   set toRequirement    = #{toRequirement   , jdbcType=INTEGER   },
+		       candidate        = #{candidate       , jdbcType=VARCHAR   },
+		       phone            = #{phone           , jdbcType=VARCHAR   },
+		       hr               = #{hr              , jdbcType=VARCHAR   },
+		       workLocation     = #{workLocation    , jdbcType=VARCHAR   },
+		       skill            = #{skill           , jdbcType=VARCHAR   },
+		       experience       = #{experience      , jdbcType=INTEGER   },
+		       language         = #{language        , jdbcType=VARCHAR   },
+		       employer         = #{employer        , jdbcType=VARCHAR   },
+		       level            = #{level           , jdbcType=VARCHAR   },
+		       remarks          = #{remarks         , jdbcType=VARCHAR   },
+		       toSubmitResumeAt = #{toSubmitResumeAt, jdbcType=TIMESTAMP },
+		       interviewResult  = #{interviewResult , jdbcType=VARCHAR   },
+		       interviewTime    = #{interviewTime   , jdbcType=TIMESTAMP },
+		       expectedSalary   = #{expectedSalary  , jdbcType=INTEGER   },
+		       files            = #{files           , jdbcType=VARCHAR   },
+		       updateAt = CURRENT_TIMESTAMP
+		 where id = #{id}
+	</update>
+
+	<delete id="deleteTracking" parameterType="int">
+		delete from soTracking where id = #{id}
+	</delete>
+</mapper>

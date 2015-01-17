@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="selectBook" resultType="info.woody.so.bean.BookBean">
+        select id          ,
+               name, category, dateOfIssue, summary, dateOfPurchase, 
+               createAt    ,
+               createBy    ,
+               updateAt    ,
+               updateBy
+		  from soBook
+		 order by createAt desc
+	</select>
+	<select id="selectBookRowCount" resultType="int">
+		select count(1) from soBook
+	</select>
+
+	<insert id="insertBook" parameterType="info.woody.so.bean.BookBean" useGeneratedKeys="true" keyProperty="id">
+		insert into soBook ( name, category, dateOfIssue, summary, dateOfPurchase )
+		values ( #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{dateOfIssue, jdbcType=DATE}, #{summary, jdbcType=VARCHAR}, #{dateOfPurchase, jdbcType=DATE} )
+	</insert>
+
+	<update id="updateBook" parameterType="info.woody.so.bean.BookBean">
+		update soBook
+		   set name           = #{name          , jdbcType=VARCHAR},
+               category       = #{category      , jdbcType=VARCHAR},
+               dateOfIssue    = #{dateOfIssue   , jdbcType=DATE},
+               summary        = #{summary       , jdbcType=VARCHAR},
+               dateOfPurchase = #{dateOfPurchase, jdbcType=DATE},
+		       updateAt = CURRENT_TIMESTAMP
+		 where id = #{id}
+	</update>
+
+	<delete id="deleteBook" parameterType="int">
+		delete from soBook where id = #{id}
+	</delete>
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="selectUser" resultType="info.woody.so.bean.UserBean">
+        select id          ,
+               username, pwd, pwdCreateAt, pwdExpDays, status, role, birth, gender, idCard, 
+
+               createAt    ,
+               createBy    ,
+               updateAt    ,
+               updateBy
+		  from soUser
+		 order by createAt desc
+	</select>
+	<select id="selectUserRowCount" resultType="int">
+		select count(1) from soUser
+	</select>
+
+	<insert id="insertUser" parameterType="info.woody.so.bean.UserBean" useGeneratedKeys="true" keyProperty="id">
+		insert into soUser ( username, pwd, pwdCreateAt, pwdExpDays, status, role, birth, gender, idCard )
+		values ( #{username,jdbcType=VARCHAR},#{pwd,jdbcType=VARCHAR},#{pwdCreateAt,jdbcType=TIMESTAMP},#{pwdExpDays,jdbcType=INTEGER},#{status,jdbcType=VARCHAR},#{role,jdbcType=VARCHAR},#{birth,jdbcType=DATE},#{gender,jdbcType=VARCHAR},#{idCard,jdbcType=VARCHAR} )
+	</insert>
+
+	<update id="updateUser" parameterType="info.woody.so.bean.UserBean">
+		update soUser
+		   set username = #{username,jdbcType=VARCHAR},
+               pwd = #{pwd,jdbcType=VARCHAR},
+               pwdCreateAt = #{pwdCreateAt,jdbcType=TIMESTAMP},
+               pwdExpDays = #{pwdExpDays,jdbcType=INTEGER},
+               status = #{status,jdbcType=VARCHAR},
+               role = #{role,jdbcType=VARCHAR},
+               birth = #{birth,jdbcType=DATE},
+               gender = #{gender,jdbcType=VARCHAR},
+               idCard = #{idCard,jdbcType=VARCHAR},
+		       updateAt = CURRENT_TIMESTAMP
+		 where id = #{id}
+	</update>
+
+	<delete id="deleteUser" parameterType="int">
+		delete from soUser where id = #{id}
+	</delete>
+</mapper>

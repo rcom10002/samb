@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="selectUnit" resultType="info.woody.so.bean.UnitBean">
+        select id          ,
+               soUnit.name, status, category, remark, parentUnit,
+		       soLinked.val as "_parentUnit"  ,
+               createAt    ,
+               createBy    ,
+               updateAt    ,
+               updateBy
+		  from soUnit
+		  left join soLinked on (soUnit.parentUnitId = soLinked.name and soLinked.entity = 'unit')
+		 order by createAt desc
+	</select>
+	<select id="selectUnitRowCount" resultType="int">
+		select count(1) from soUnit
+	</select>
+	<select id="selectParentUnit" parameterType="int" resultType="info.woody.so.bean.UnitBean">
+        select id          ,
+               name        ,
+               status      ,
+               category    ,
+               remark      ,
+               parentUnit  ,
+               parentUnitId,
+               createAt    ,
+               createBy    ,
+               updateAt    ,
+               updateBy
+		  from soUnit
+		 where id = #{id}
+	</select>
+
+	<insert id="insertUnit" parameterType="info.woody.so.bean.UnitBean" useGeneratedKeys="true" keyProperty="id">
+		insert into soUnit ( name, status, category, remark, parentUnit, parentUnitId )
+		values ( #{name, jdbcType=VARCHAR}, #{status, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{remark, jdbcType=VARCHAR}, #{parentUnit, jdbcType=VARCHAR}, #{parentUnitId, jdbcType=INTEGER} )
+	</insert>
+
+	<update id="updateUnit" parameterType="info.woody.so.bean.UnitBean">
+		update soUnit
+		   set name         = #{name    ,     jdbcType=VARCHAR},
+               status       = #{status  ,     jdbcType=VARCHAR},
+               category     = #{category,     jdbcType=VARCHAR},
+               remark       = #{remark  ,     jdbcType=VARCHAR}, 
+               parentUnit   = #{parentUnit,   jdbcType=VARCHAR},  
+               parentUnitId = #{parentUnitId, jdbcType=INTEGER},   
+		       updateAt     = CURRENT_TIMESTAMP
+		 where id = #{id}
+	</update>
+
+	<update id="updateSubUnits" parameterType="info.woody.so.bean.UnitBean">
+		update soUnit
+		   set parentUnit   = #{newParentUnit},  
+		       updateAt     = CURRENT_TIMESTAMP
+		 where parentUnit like #{oldParentUnit,jdbcType=VARCHAR} || '%'
+	</update>
+
+	<delete id="deleteUnit" parameterType="java.util.Map">
+		delete from soUnit where id = #{id,jdbcType=INTEGER} or parentUnit like #{parentUnit,jdbcType=VARCHAR} || '%'
+	</delete> 
+</mapper>

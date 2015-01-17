@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="selectNews" resultType="info.woody.so.bean.NewsBean">
+        select id          ,
+               title, category, author, mainBody, dateOfIssue, 
+               createAt    ,
+               createBy    ,
+               updateAt    ,
+               updateBy
+		  from soNews
+		 order by createAt desc
+	</select>
+	<select id="selectNewsRowCount" resultType="int">
+		select count(1) from soNews
+	</select>
+
+	<insert id="insertNews" parameterType="info.woody.so.bean.NewsBean" useGeneratedKeys="true" keyProperty="id">
+		insert into soNews ( title, category, author, mainBody, dateOfIssue )
+		values ( #{title, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{author, jdbcType=VARCHAR}, #{mainBody, jdbcType=VARCHAR}, #{dateOfIssue, jdbcType=DATE} )
+	</insert>
+
+	<update id="updateNews" parameterType="info.woody.so.bean.NewsBean">
+		update soNews
+		   set title       = #{title      , jdbcType=VARCHAR},
+               category    = #{category   , jdbcType=VARCHAR},
+               author      = #{author     , jdbcType=VARCHAR},
+               mainBody    = #{mainBody   , jdbcType=VARCHAR},
+               dateOfIssue = #{dateOfIssue, jdbcType=DATE},
+		       updateAt = CURRENT_TIMESTAMP
+		 where id = #{id}
+	</update>
+
+	<delete id="deleteNews" parameterType="int">
+		delete from soNews where id = #{id}
+	</delete>
+</mapper>

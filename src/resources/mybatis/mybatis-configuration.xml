@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL" />
+	</settings>
+
+	<mappers>
+		<mapper resource="/mybatis/mybatis-common-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-requirement-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-tracking-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-lookup-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-cost-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-linked-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-user-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-unit-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-news-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-event-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-book-mapper.xml" />
+	</mappers>
+</configuration>

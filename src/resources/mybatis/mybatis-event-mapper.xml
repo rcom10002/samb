@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="selectEvent" resultType="info.woody.so.bean.EventBean">
+        select id          ,
+               subject, category, host, participant, content, startAt, endAt, 
+               createAt    ,
+               createBy    ,
+               updateAt    ,
+               updateBy
+		  from soEvent
+		 order by createAt desc
+	</select>
+	<select id="selectEventRowCount" resultType="int">
+		select count(1) from soEvent
+	</select>
+
+	<insert id="insertEvent" parameterType="info.woody.so.bean.EventBean" useGeneratedKeys="true" keyProperty="id">
+		insert into soEvent ( subject, category, host, participant, content, startAt, endAt )
+		values ( #{subject, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{host, jdbcType=VARCHAR}, #{participant, jdbcType=VARCHAR}, #{content, jdbcType=VARCHAR}, #{startAt, jdbcType=TIMESTAMP}, #{endAt, jdbcType=TIMESTAMP} )
+	</insert>
+
+	<update id="updateEvent" parameterType="info.woody.so.bean.EventBean">
+		update soEvent
+		   set subject     = #{subject    , jdbcType=VARCHAR},
+               category    = #{category   , jdbcType=VARCHAR},
+               host        = #{host       , jdbcType=VARCHAR},
+               participant = #{participant, jdbcType=VARCHAR},
+               content     = #{content    , jdbcType=VARCHAR},
+               startAt     = #{startAt    , jdbcType=TIMESTAMP},
+               endAt       = #{endAt      , jdbcType=TIMESTAMP},
+		       updateAt = CURRENT_TIMESTAMP
+		 where id = #{id}
+	</update>
+
+	<delete id="deleteEvent" parameterType="int">
+		delete from soEvent where id = #{id}
+	</delete>
+</mapper>

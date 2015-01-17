@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="static/js/jquery.min.js"></script>
+<script type="text/javascript">
+	var JavaTypes = {
+		"VARCHAR" : "String",
+		"TIMESTAMP" : "Date",
+		"DATE" : "Date",
+		"INTEGER" : "int",
+		"DECIMAL" : "Double"
+	};
+	function generate_all_handler() {
+		var module = $("#item-module").val();
+		var moduleLabel = $("#item-module-label").val();
+		if (!module || /^[A-Z]/.test(module)) {
+			alert("Module name is required and should be start with a lowercase char");
+			return;
+		}
+		if (!moduleLabel || moduleLabel.trim().length == 0) {
+			alert("Module label is required.");
+			return;
+		}
+		var ddl = "";
+		var javabean = "";
+		var mybatis1 = "";
+		var mybatis2 = "";
+		var mybatis3 = "";
+		var modulej1 = "";
+		var modulej2 = "";
+		var modulej3 = "";
+		var modulej4 = "";
+		var modulej5 = "";
+		var phrase   = "";
+		
+		var keyMaxLength = 0;
+		var javatypeMaxLength = 0;
+		$("#kt-entries .kt-entry").each(function (i, e) {
+			var key = $(".key", e).text();
+			var javatype = $(".javatype", e).text();
+
+			if (keyMaxLength < key.length) keyMaxLength = key.length;
+			if (javatypeMaxLength < javatype.length) javatypeMaxLength = javatype.length;
+		});
+		$("#kt-entries .kt-entry").each(function (i, e) {
+			var label = $(".label", e).text();
+			var key = $(".key", e).text();
+			var type = $(".type", e).text();
+			var javatype = $(".javatype", e).text();
+			ddl      += (pad(key, keyMaxLength) + " " + type + " NOT NULL,\n");
+			javabean += ("private " + pad(javatype, javatypeMaxLength) + " " + pad(key, keyMaxLength) + ";\n");
+			mybatis1 += (key + ", ");
+			mybatis2 += ("#{" + key + ", jdbcType=" + type.replace(/[(].+/, "") + "}, ");
+			mybatis3 += (pad(key, keyMaxLength) + " = " + ("#{" + pad(key, keyMaxLength) + ", jdbcType=" + type.replace(/[(].+/, "") + "},\n"));
+			modulej1 += "\"" + pad(key, keyMaxLength) + "\": [solib.validation.required()],\n";
+			modulej2 += '"#key": { "name": "#key", "check": page._validation["#key"], "label": "#module.#key", "type": "" },\n'.replace(/#key/g, pad(key, keyMaxLength)).replace(/#module/g, module);
+			modulej3 += "page._formControlRepository[\"" + pad(key, keyMaxLength) + "\"],\n";
+			modulej4 += 'page.renew(angular.copy(page._formControlRepository["#key"]), {"readonly": true}),\n'.replace(/#key/g, pad(key, keyMaxLength));
+			modulej5 += '{ "field": "#key", "displayName": "#module.#key" },\n'.replace(/#key/g, pad(key, keyMaxLength)).replace(/#module/g, module);
+			phrase   += module + "." + key + "=" + label + "\n";
+		});
+		phrase += "\n#module.listViewH1=#moduleLabel列表\n#module.addViewH1=#moduleLabel添加\n#module.viewViewH1=#moduleLabel查看\n#module.editViewH1=#moduleLabel编辑\n";
+		phrase = "######moduleLabel\n" + phrase + "\nglobal.#module=#moduleLabel管理\n";
+		var moduleA = module[0].toUpperCase() + module.substring(1);
+		ddl = $("#tpl-ddl").html().replace(/#ddl/, ddl).replace(/#module/g, moduleA);
+		modulej1 = modulej1.replace(/( {2,}?)"/g, '"$1').replace(/(\w) "/g, '$1" ');
+		modulej2 = modulej2.replace(/( {2,}?)"/g, '"$1').replace(/(\w) "/g, '$1" ');
+		modulej3 = modulej3.replace(/( {2,}?)"/g, '"$1').replace(/(\w) "/g, '$1" ');
+		modulej4 = modulej4.replace(/( {2,}?)"/g, '"$1').replace(/(\w) "/g, '$1" ');
+		modulej5 = modulej5.replace(/( {2,}?)"/g, '"$1').replace(/(\w) "/g, '$1" ');
+		$("textarea:eq(0)").val(ddl);
+		$("textarea:eq(1)").val(javabean.replace(/(private Date)/g, '@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")' + "\n$1"));
+		$("textarea:eq(2)").val([mybatis1, mybatis2, mybatis3].join("\n\n\n"));
+		$("textarea:eq(3)").val([modulej1, modulej2, modulej3, modulej4, modulej5].join("\n\n\n"));
+		$("textarea:eq(4)").val(phrase.replace(/#moduleLabel/g, moduleLabel).replace(/#module/g, module));
+		$("textarea:eq(5)").val('<li><a href="${pageContext.request.contextPath}/#module.entity"><spring:message code="global.#module"/></a></li>'.replace(/#module/g, module));
+	}
+	function add_handler() {
+		var label = $("#item-label").val();
+		var key = $("#item-key").val();
+		var type = $("#item-type").val();
+		var length = $("#item-length").val();
+		var javatype = JavaTypes[type];
+		if (type == "DECIMAL" || type == "VARCHAR") {
+			if (!/^[0-9]+$/.test(length)) {
+				alert("Length should be INTEGER");
+				return;
+			}
+			type = type + "(" + length + ")";
+		}
+		if (!label) {
+			alert("Label is required");
+			return;
+		}
+		if (!key) {
+			alert("Key is required");
+			return;
+		}
+		if (!type) {
+			alert("Type is required");
+			return;
+		}
+		var html = $("#kt-entry").html().replace("#key", key).replace("#type", type).replace("#javatype", javatype).replace("#label", label);
+		$("#kt-entries").append(html);
+	}
+	function remove_handler(e) {
+		if (confirm('remove the selected?'))
+			$(e).parent().remove();
+	}
+	function pad(str, maxLength) {
+		var padBlanks = new Array(maxLength).join(" ");
+		if (str.length > maxLength) return str;
+		str += padBlanks;
+		return str.substring(0, maxLength);
+	}
+</script>
+<style type="text/css">
+textarea {
+width: 100%;
+height: 300px;
+}
+.kt-entry span {
+width: 150px;
+display: inline-block;
+}
+</style>
+</head>
+<body>
+	<script type="text/so-template" id="kt-entry"><div class="kt-entry"><span class="label">#label</span>&nbsp;<span class="key">#key</span>&nbsp;<span class="type">#type</span>&nbsp;<span class="javatype">#javatype</span>&nbsp;<a href="javascript:void(0);" onclick="remove_handler(this)">remove</a>;</div></script>
+<script type="text/so-template" id="tpl-ddl">
+DROP TABLE so#module;
+
+CREATE TABLE so#module
+(
+id       INTEGER      NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+#ddlcreateAt TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+createBy VARCHAR(100) NOT NULL DEFAULT 'soSys',
+updateAt TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+updateBy VARCHAR(100) NOT NULL DEFAULT 'soSys'
+);
+</script>
+
+
+<script type="text/so-template" id="tpl-ddl">
+#module.listViewH1=#module_label列表
+#module.addViewH1=#module_label添加
+#module.viewViewH1=#module_label查看
+#module.editViewH1=#module_label编辑
+</script>
+	<div>
+		Module: <input id="item-module" /> Module Label: <input id="item-module-label" /> <input type="button" value="generate all" onclick="generate_all_handler()" /> <input type="button" value="reset all" />
+	</div>
+	<div>
+		<div>
+			Label: <input id="item-label" /> Key: <input id="item-key" /> Type: <select id="item-type">
+				<option value="VARCHAR">VARCHAR</option>
+				<option value="TIMESTAMP">TIMESTAMP</option>
+				<option value="DATE">DATE</option>
+				<option value="INTEGER">INTEGER</option>
+				<option value="DECIMAL">DECIMAL</option>
+			</select> Length: <input id="item-length" value="100" /> <input type="button" onclick="add_handler()" value="add" />
+		</div>
+		<div>
+			key-type entries:
+			<div id="kt-entries"></div>
+		</div>
+	</div>
+
+	<h5>DDL.sql</h5>
+	<textarea></textarea>
+	<h5>JavaBean</h5>
+	<textarea></textarea>
+	<h5>mybatis</h5>
+	<textarea></textarea>
+	<h5>{module}.js</h5>
+	<textarea></textarea>
+	<h5>phrase.properties</h5>
+	<textarea></textarea>
+	<h5>global.jsp</h5>
+	<textarea></textarea>
+</body>
+</html>

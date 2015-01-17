@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="selectArbitrarySQL" parameterType="java.lang.String" resultType="java.util.Map">
+        ${sql}
+	</select>
+	<select id="selectArbitrarySQLRowCount" parameterType="java.lang.String" resultType="int">
+		select count(1) from (${sql})
+	</select>
+</mapper>
+
+
+<!--
+
+NUMBER
+FROM TO
+START FROM
+UP TO
+
+STRING
+START WITH
+CONTAIN
+END WITH
+
+DATE
+FROM TO
+START FROM
+UP TO
+
+-->

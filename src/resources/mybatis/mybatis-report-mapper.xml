@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="selectReport" resultType="info.woody.so.bean.ReportBean">
+        select id          ,
+               category    ,
+               name        ,
+               applicant   ,
+               status      ,
+               amount      ,
+               detail      ,
+               memo        ,
+               mailEvidence,
+               createAt    ,
+               createBy    ,
+               updateAt    ,
+               updateBy
+		  from soReport
+		 order by createAt desc
+	</select>
+	<select id="selectReportRowCount" resultType="int">
+		select count(1) from soReport
+	</select>
+
+	<insert id="insertReport" parameterType="info.woody.so.bean.ReportBean" useGeneratedKeys="true" keyProperty="id">
+		insert into soReport ( category, name, applicant, status, amount, detail, memo, mailEvidence )
+		values ( #{category,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{applicant,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{detail,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR}, #{mailEvidence,jdbcType=VARCHAR} )
+	</insert>
+
+	<update id="updateReport" parameterType="info.woody.so.bean.ReportBean">
+		update soReport
+		   set category     = #{category,jdbcType=VARCHAR}, 
+		       name         = #{name,jdbcType=VARCHAR}, 
+		       applicant    = #{applicant,jdbcType=VARCHAR}, 
+		       status       = #{status,jdbcType=VARCHAR}, 
+		       amount       = #{amount,jdbcType=DECIMAL}, 
+		       detail       = #{detail,jdbcType=VARCHAR}, 
+		       memo         = #{memo,jdbcType=VARCHAR}, 
+		       mailEvidence = #{mailEvidence,jdbcType=VARCHAR},
+		       updateAt = CURRENT_TIMESTAMP
+		 where id = #{id}
+	</update>
+
+	<delete id="deleteReport" parameterType="int">
+		delete from soReport where id = #{id}
+	</delete>
+</mapper>

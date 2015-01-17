@@ -1,0 +1,151 @@
+<script type="text/ng-template" id="form-control-field">
+<div class="form-group" ng-class="{'has-error': page.formControlView.validation[formControl.name].hasError}" ng-switch on="formControl.type">
+	<label class="control-label" for="input-{{page.formControlView.name}}-{{formControl.name}}">{{page.phrase(formControl.label)}}</label>
+    <div class="well well-sm" ng-if="formControl.readonly">
+        <span ng-switch-when="number"   ng-bind="page.format.toCurrency(page.formControlView.model[formControl.name])"></span>
+        <span ng-switch-when="date"     ng-bind="page.format.dateStringFromUTCtoLocal(page.formControlView.model[formControl.name])"></span>
+        <span ng-switch-when="datetime" ng-bind="page.format.datetimeStringFromUTCtoLocal(page.formControlView.model[formControl.name])"></span>
+        <span ng-switch-when="linked"   ng-bind="page.formControlView.model['_' + formControl.name]"></span>
+        <span ng-switch-when="select"   ng-bind="page.lookupV(formControl['select-source'], page.formControlView.model[formControl.name])"></span>
+        <div ng-switch-when="richtext" ng-bind-html="page.formControlView.model[formControl.name] | sanitize"></div>
+        <ul class="list-group" ng-switch-when="files">
+            <li class="list-group-item" ng-repeat="file in page.formControlView.model['_' + formControl.name]">
+                <a target="_blank" href="{{page.fileuri(file)}}">{{file}}</a>
+            </li>
+        </ul>
+        <span ng-switch-default         ng-bind="page.formControlView.model[formControl.name]"></span>
+    </div>
+    <div ng-if="!formControl.readonly">
+	<select class="form-control" ng-switch-when="select" ng-model="page.formControlView.model[formControl.name]" ng-options="option.name as option.val for option in page.lookup[formControl['select-source']]">
+        <option value=""></option>
+	</select>
+<!--textarea-menu="{{yourModel.customMenu}}"-->
+    <wysiwyg ng-switch-when="richtext" textarea-id="input-{{page.formControlView.name}}-{{formControl.name}}" textarea-class="form-control" textarea-height="100px" ng-model="page.formControlView.model[formControl.name]" enable-bootstrap-title="true"></wysiwyg>
+	<textarea class="form-control" ng-switch-when="textarea" id="input-{{page.formControlView.name}}-{{formControl.name}}" ng-model="page.formControlView.model[formControl.name]" />
+    <span class="input-group" ng-switch-when="date">
+        <span class="input-group-btn">
+            <button id="datepicker-btn-{{page.formControlView.name}}-{{formControl.name}}" type="button" class="btn btn-default" ng-click="control.openDatepicker($event)"><span class="glyphicon glyphicon-calendar"></span></button>
+        </span>
+		<input type="text" class="form-control" ng-model="page.formControlView.model['_' + formControl.name]" datepicker-popup="yyyy-MM-dd" current-text="{{control.phrase['datepicker-today']}}" clear-text="{{control.phrase['datepicker-clear']}}" close-text="{{control.phrase['datepicker-close']}}" is-open="control['datepicker-btn-' + page.formControlView.name + '-' + formControl.name + 'visible']" readonly />
+    </span>
+    <span class="input-group" ng-switch-when="datetime">
+        <span class="input-group-btn">
+            <button id="datepicker-btn-{{page.formControlView.name}}-{{formControl.name}}" type="button" class="btn btn-default" ng-click="control.openDatepicker($event)"><span class="glyphicon glyphicon-calendar"></span></button>
+        </span>
+		<input type="text" class="form-control" ng-model="page.formControlView.model['_' + formControl.name]" datepicker-popup="yyyy-MM-dd" current-text="{{control.phrase['datepicker-today']}}" clear-text="{{control.phrase['datepicker-clear']}}" close-text="{{control.phrase['datepicker-close']}}" is-open="control['datepicker-btn-' + page.formControlView.name + '-' + formControl.name + 'visible']" readonly />
+    </span>
+	<timepicker ng-switch-when="datetime" ng-model="page.formControlView.model['_' + formControl.name]" show-meridian="true" meridians="[control.phrase['datepicker-morning'], control.phrase['datepicker-afternoon']]"></timepicker>
+    <div class="input-group" ng-switch-when="linked">
+        <span class="input-group-btn"><button class="btn btn-default" type="button" ng-click="formControl['linked-handler'](page.formControlView.name + 'View')"><span class="glyphicon glyphicon-link"></span></button></span>
+	    <input type="text" class="form-control" id="input-{{page.formControlView.name}}-{{formControl.name}}" ng-model="page.formControlView.model['_' + formControl.name]" readonly />
+	    <input type="hidden" ng-model="page.formControlView.model[formControl.name]" />
+	</div>
+    <ul class="list-group" ng-switch-when="files">
+        <li class="list-group-item list-group-item-info" ng-click="openFile(formControl['file-handler'])"><a href="javascript:void(0);" ng-click="control.openFileUpload(formControl['file-handler'](page.formControlView.name + 'View'), page.formControlView.model['_' + formControl.name]);"><span class="glyphicon glyphicon-edit"></span> {{page.phrase("control.uploadfile.action")}}</a></li>
+        <li class="list-group-item" ng-repeat="file in page.formControlView.model['_' + formControl.name]">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">{{page.phrase("control.uploadfile.remove")}} <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" ng-click="page.formControlView.model['_' + formControl.name].splice($index, 1);">{{page.phrase("button.ok")}}</a></li>
+                    <li><a href="#">{{page.phrase("button.cancel")}}</a></li>
+                </ul>
+            </div>
+            <a target="_blank" href="{{page.fileuri(file)}}">{{file}}</a>
+        </li>
+    </ul>
+	<input class="form-control" ng-switch-when="lookuptext" type="text" id="input-{{page.formControlView.name}}-{{formControl.name}}" ng-value="page.lookupV(formControl.label, page.formControlView.model[formControl.name])" />
+	<input class="form-control" ng-switch-default type="text" id="input-{{page.formControlView.name}}-{{formControl.name}}" ng-model="page.formControlView.model[formControl.name]" />
+    <div style="white-space: pre-wrap;" class="alert alert-warning" ng-show="page.formControlView.validation[formControl.name].hasError" role="alert">{{page.formControlView.validation[formControl.name].errorMessage}}</div>
+    </div>
+</div>
+</script>
+
+<script type="text/ng-template" id="form-control-alert">
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+    <div class="modal-body">{{text}}</div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="form-control-confirm">
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+    <div class="modal-body">{{text}}</div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()"><span class="glyphicon glyphicon-ok"></span> {{control.phrase["button-ok"]}}</button>
+        <button class="btn btn-warning" ng-click="cancel()"><span class="glyphicon glyphicon-remove"></span> {{control.phrase["button-cancel"]}}</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="form-control-linked">
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+    <div class="modal-body">
+        <table class="table table-hover">
+        	<thead>
+                <tr>
+                    <th>#</th><th>NAME</th><th>VALUE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in linked.list" ng-class="{ 'info': item.name == linked.selectedItem.name }" ng-click="linked.selectedItem = item">
+                    <td>{{$index + 1}}</td><td>{{item.name}}</td><td>{{item.val}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="container-fluid">
+            <pagination ng-change="query()"
+            	total-items="linked.pagination.rowCount"
+            	items-per-page="linked.pagination.pageSize"
+            	ng-model="linked.pagination.currentPageNumber"
+            	class="pagination-sm pull-right" boundary-links="true" rotate="true"
+                first-text="{{control.phrase['pagination-first']}}"
+                previous-text="{{control.phrase['pagination-up']}}"
+                next-text="{{control.phrase['pagination-down']}}"
+                last-text="{{control.phrase['pagination-last']}}"
+                ></pagination>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="ok()" ng-disabled="!linked.selectedItem"><span class="glyphicon glyphicon-ok"></span> {{control.phrase["button-ok"]}}</button>
+        <button class="btn btn-warning" ng-click="cancel()"><span class="glyphicon glyphicon-remove"></span> {{control.phrase["button-cancel"]}}</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="form-control-file-upload">
+    <div class="modal-header">
+        <h3 class="modal-title">{{control.phrase["button-upload"]}}</h3>
+    </div>
+    <div class="modal-body">
+        <button ng-show="!done" class="btn btn-primary" ng-click="add()"><span class="glyphicon glyphicon-plus"></span> {{control.phrase["button-add"]}}</button>
+        <!--<iframe width="100%" height="150" frameBorder="0" scrolling="no" src="static/html/upload.html" ></iframe>-->
+        <iframe id="file-container" width="100%" height="100" frameBorder="0" scrolling="no" src="static/html/uploadMultiple.html"></iframe>
+        <!--<div ng-repeat="file in existingFiles"><a href="javascript:void(0);" ng-click="remove($index)">{{page.phrase("control.uploadfile.remove")}}test</a> {{file}}</div>-->
+    </div>
+    <div class="modal-footer">
+        <div class="btn-group" role="group">
+            <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-ok"></span> {{control.phrase["button-action"]}} <span class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu">
+                <li ng-show="!done"><a href="#" ng-click="upload()"><span class="glyphicon glyphicon-ok-circle"></span> {{control.phrase["button-upload"]}}</a></li>
+                <li ng-show="done"><a href="#" ng-click="complete()"><span class="glyphicon glyphicon-ok-circle"></span> {{control.phrase["button-complete"]}}</a></li>
+                <li><a href="#" ng-click="reset()"><span class="glyphicon glyphicon-remove-circle"></span> {{control.phrase["button-reset"]}}</a></li>
+            </ul>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="glyphicon glyphicon-remove"></span> {{control.phrase["button-cancel"]}} <span class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#" ng-click="cancel()"><span class="glyphicon glyphicon-ban-circle"></span> {{control.phrase["button-abort"]}}</a></li>
+            </ul>
+        </div>
+    </div>
+</script>
+
+<!-- <button class="btn btn-default" ng-click="open()">Open me!</button> -->
+<!-- <button class="btn btn-default" ng-click="open('lg')">Large modal</button> -->
+<!-- <button class="btn btn-default" ng-click="open('sm')">Small modal</button> -->
+<!-- <div ng-show="selected">Selection from a modal: {{ selected }}</div> -->

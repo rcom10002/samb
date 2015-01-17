@@ -1,0 +1,23 @@
+body {
+	padding-top: 50px;
+}
+
+.starter-template {
+	padding: 0px 15px;
+	/*   text-align: center; */
+}
+
+#phrase-source {
+	display: none;
+}
+
+th, td {
+	white-space: nowrap;
+}
+
+.gridStyle {
+    border: 1px solid rgb(212,212,212);
+/*     width: 400px;  */
+    min-height: 300px;
+    height:100%;
+}
