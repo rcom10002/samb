@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="selectFamily" resultType="info.woody.so.bean.FamilyBean">
+        select id          ,
+               category    ,
+               name        ,
+               applicant   ,
+               status      ,
+               amount      ,
+               detail      ,
+               memo        ,
+               mailEvidence,
+               createAt    ,
+               createBy    ,
+               updateAt    ,
+               updateBy
+		  from soFamily
+		 order by createAt desc
+	</select>
+	<select id="selectFamilyRowCount" resultType="int">
+		select count(1) from soFamily
+	</select>
+
+	<insert id="insertFamily" parameterType="info.woody.so.bean.FamilyBean" useGeneratedKeys="true" keyProperty="id">
+		insert into soFamily ( category, name, applicant, status, amount, detail, memo, mailEvidence )
+		values ( #{category,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{applicant,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{detail,jdbcType=VARCHAR}, #{memo,jdbcType=VARCHAR}, #{mailEvidence,jdbcType=VARCHAR} )
+	</insert>
+
+	<update id="updateFamily" parameterType="info.woody.so.bean.FamilyBean">
+		update soFamily
+		   set category     = #{category,jdbcType=VARCHAR}, 
+		       name         = #{name,jdbcType=VARCHAR}, 
+		       applicant    = #{applicant,jdbcType=VARCHAR}, 
+		       status       = #{status,jdbcType=VARCHAR}, 
+		       amount       = #{amount,jdbcType=DECIMAL}, 
+		       detail       = #{detail,jdbcType=VARCHAR}, 
+		       memo         = #{memo,jdbcType=VARCHAR}, 
+		       mailEvidence = #{mailEvidence,jdbcType=VARCHAR},
+		       updateAt = CURRENT_TIMESTAMP
+		 where id = #{id}
+	</update>
+
+	<delete id="deleteFamily" parameterType="int">
+		delete from soFamily where id = #{id}
+	</delete>
+</mapper>

@@ -1,32 +1,26 @@
 package info.woody.so.bean;
 
 public class ReportBean extends BaseBean {
-	private String name;
-	private String sql;
-	private String labels;
-	private String filter;
-	public String getName() {
-		return name;
+	private String category;
+	private int qty;
+	private double avgWeight;
+	public String getCategory() {
+		return category;
 	}
-	public String getSql() {
-		return sql;
+	public int getQty() {
+		return qty;
 	}
-	public String getLabels() {
-		return labels;
+	public double getAvgWeight() {
+		return avgWeight;
 	}
-	public String getFilter() {
-		return filter;
+	public void setCategory(String category) {
+		this.category = category;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setQty(int qty) {
+		this.qty = qty;
 	}
-	public void setSql(String sql) {
-		this.sql = sql;
+	public void setAvgWeight(double avgWeight) {
+		this.avgWeight = avgWeight;
 	}
-	public void setLabels(String labels) {
-		this.labels = labels;
-	}
-	public void setFilter(String filter) {
-		this.filter = filter;
-	}
+	
 }

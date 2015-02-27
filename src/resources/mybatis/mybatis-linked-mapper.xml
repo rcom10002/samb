@@ -5,37 +5,39 @@
 <mapper namespace="info.woody.so">
 
 	<select id="selectLinked" resultType="info.woody.so.bean.LinkedBean">
-		<if test="entity == 'requirement'">
-			SELECT id AS name,
-			       (corp || ', ' || cast(createAt as date) || ', ' || target || ', ' || position) AS val,
-			       0 AS weight
-			  FROM soRequirement
-			 WHERE status = 'OPEN'
-			 ORDER BY createAt DESC
-		</if>
-		<if test="entity == 'unit'">
-			SELECT name, val, weight FROM
-			(
-			SELECT id, name, 0
-			  FROM soUnit
-			 WHERE status = 'ACTIVE'
-			 UNION VALUES (0, '/', 0)
-			 ORDER BY 1, 3
-			) T (name, val, weight)
-		</if>
+	    SELECT * FROM soLinked WHERE entity = #{entity}
+<!-- 		<if test="entity == 'requirement'"> -->
+<!-- 			SELECT id AS name, -->
+<!-- 			       (corp || ', ' || cast(createAt as date) || ', ' || target || ', ' || position) AS val, -->
+<!-- 			       0 AS weight -->
+<!-- 			  FROM soRequirement -->
+<!-- 			 WHERE status = 'OPEN' -->
+<!-- 			 ORDER BY createAt DESC -->
+<!-- 		</if> -->
+<!-- 		<if test="entity == 'unit'"> -->
+<!-- 			SELECT name, val, weight FROM -->
+<!-- 			( -->
+<!-- 			SELECT id, name, 0 -->
+<!-- 			  FROM soUnit -->
+<!-- 			 WHERE status = 'ACTIVE' -->
+<!-- 			 UNION VALUES (0, '/', 0) -->
+<!-- 			 ORDER BY 1, 3 -->
+<!-- 			) T (name, val, weight) -->
+<!-- 		</if> -->
 	</select>
 
 	<select id="selectLinkedRowCount" resultType="int">
-		<if test="entity == 'requirement'">
-			SELECT COUNT(1)
-			  FROM soRequirement
-			 WHERE status = 'OPEN'
-		</if>
-		<if test="entity == 'unit'">
-			SELECT COUNT(1) + 1
-			  FROM soUnit
-			 WHERE status = 'ACTIVE'
-		</if>
+	    SELECT COUNT(1) FROM soLinked WHERE entity = #{entity}
+<!-- 		<if test="entity == 'requirement'"> -->
+<!-- 			SELECT COUNT(1) -->
+<!-- 			  FROM soRequirement -->
+<!-- 			 WHERE status = 'OPEN' -->
+<!-- 		</if> -->
+<!-- 		<if test="entity == 'unit'"> -->
+<!-- 			SELECT COUNT(1) + 1 -->
+<!-- 			  FROM soUnit -->
+<!-- 			 WHERE status = 'ACTIVE' -->
+<!-- 		</if> -->
 	</select>
 
 </mapper>

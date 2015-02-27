@@ -114,29 +114,55 @@ public class DispatcherListener implements ServletContextListener {
 	}
 
 	public static void main(String[] args) throws Exception {
-
-        String driver = "org.apache.derby.jdbc.EmbeddedDriver";  
-        Class.forName(driver).newInstance();  
-        Connection conn = DriverManager.getConnection("jdbc:derby:/home/woody/git/so/sodb;create=true");
-        Statement stat = conn.createStatement();
-        stat.executeUpdate("DROP VIEW soLinked");
-        System.out.println(stat.executeUpdate(
-        		"CREATE VIEW soLinked(entity, name, val, weight) AS                                                       " +
-        		"SELECT 'requirement' AS entity,                                                                          " + 
-        		"       id,                                                                                               " +  
-        		"       (corp || ', ' || cast(createAt as date) || ', ' || target || ', ' || position) AS val,0 AS weight " + 
-        		"  FROM soRequirement                                                                                     " +
-        		" WHERE status = 'OPEN'                                                                                   " +
-        		" UNION                                                                                                   " +
-        		"SELECT 'unit',                                                                                           " +
-        		"       id,                                                                                               " +
-        		"       name, 0                                                                                           " +
-        		"  FROM soUnit                                                                                            " +
-        		" WHERE status = 'ACTIVE'                                                                                 " +
-        		" UNION VALUES ('unit', 0, '/', 0)                                                                        " +
-        		" ORDER BY 1, 4                                                                                           "
-        		));
-        stat.close();
-        conn.close();
+		Parent a1 = new Parent();
+		Parent a2 = new Child();
+		System.out.println(a1.aaa);
+		System.out.println(a2.aaa);
+//        String driver = "org.apache.derby.jdbc.EmbeddedDriver";  
+//        Class.forName(driver).newInstance();  
+//        Connection conn = DriverManager.getConnection("jdbc:derby:/home/woody/git/so/sodb;create=true");
+//        Statement stat = conn.createStatement();
+//        //stat.executeUpdate("DROP VIEW soLinked");
+//        System.out.println(stat.executeUpdate(
+//        		"CREATE VIEW soLinked(entity, name, val, weight) AS                                                             " +
+//        		"  SELECT 'requirement' AS entity,                                                                              " +
+//        		"         id,                                                                                                   " +
+//        		"         (corp || ', ' || cast(createAt as date) || ', ' || target || ', ' || position) AS val, corp AS weight " +
+//        		"    FROM soRequirement                                                                                         " +
+//        		"   WHERE status = 'OPEN'                                                                                       " +
+//        		"   UNION                                                                                                       " +
+//        		"  SELECT 'unit' AS entity, id, val, weight FROM                                                                " +
+//        		"  (                                                                                                            " +
+//        		"  SELECT id, name AS val, parentUnit || '/' AS weight                                                          " +
+//        		"    FROM soUnit                                                                                                " +
+//        		"   WHERE status = 'ACTIVE'                                                                                     " +
+//        		"   UNION VALUES (0, '/', '')                                                                                   " +
+//        		"   ORDER BY 1, 3                                                                                               " +
+//        		"   ) T (id, val, weight)                                                                                       " +
+//        		"   ORDER BY 1, 4                                                                                               "
+//        		));
+//        stat.close();
+//        conn.close();
 	}
+
+	public static class Parent {
+		public int aaa = 10;
+		public Parent() {
+			aaa = 20;
+		}
+		public int getAaa() {
+			return aaa;
+		}
+	}
+
+	public static class Child extends Parent {
+		public int aaa = 100;
+		public Child() {
+			aaa = 200;
+		}
+		public int getAaa() {
+			return aaa;
+		}
+	}
+
 }

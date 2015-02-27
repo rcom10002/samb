@@ -7,12 +7,12 @@ app.controller(moduleName + "-controller", function ($scope, $http) {
 	/*
 	 * View Model
 	 */
-	page.listView = new solib.PageViewModel("list");
-	page.addView = new solib.PageViewModel("add");
-	page.viewView = new solib.PageViewModel("view");
-	page.editView = new solib.PageViewModel("edit");
-	page.deleteView = new solib.PageViewModel("delete");
-	page.helpView = new solib.PageViewModel("help");
+	page.listView = new solib.PageView("list");
+	page.addView = new solib.PageView("add");
+	page.viewView = new solib.PageView("view");
+	page.editView = new solib.PageView("edit");
+	page.deleteView = new solib.PageView("delete");
+	page.helpView = new solib.PageView("help");
 
 	function fileHandler(currentView) {
 		return function (files) {
@@ -125,7 +125,7 @@ app.controller(moduleName + "-controller", function ($scope, $http) {
 		if (page.listView.pagination && page.listView.pagination.currentPageNumber) {
 			uri = "/rest/" + moduleName + "/load/" + page.listView.pagination.currentPageNumber;
 		}
-		$http["get"](solib.uri(uri), page.addView.model)
+		$http["get"](solib.uri(uri))
 		.success(function(data, status, headers, config) {
 			page.listView.pagination = data.pagination;
 			page.listView.model = data.list;
@@ -134,7 +134,7 @@ app.controller(moduleName + "-controller", function ($scope, $http) {
 	}
 	page.addView.startAdd = function () {
 		page.formControlView = page.addView;
-		page.addView.model = { };
+		page.addView.model = new solib.EntityModel();
 		page.hideAllViews();
 		page.addView.visible = true;
 	};

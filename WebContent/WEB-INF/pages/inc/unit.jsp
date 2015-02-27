@@ -49,6 +49,43 @@
 			<form role="form" id="addView">
 				<div class="container-fluid" ng-repeat="formControl in page.addView.formControls" ng-include="'form-control-field'"></div>
 			</form>
+			<!-- ENTRIES START -->
+			<div class="container-fluid">
+				<div class="panel panel-default">
+					<div class="panel-heading"><h2>成员编辑</h2></div>
+					<div class="panel-body">
+						<form class="form-inline">
+							<div class="form-group">
+								<div class="input-group">
+								    <span class="input-group-addon">新成员</span>
+								    <input type="text" class="form-control" id="input-addView-user" ng-model="page.addView.model._entryModel['_memberId']" readonly />
+							        <span class="input-group-btn"><button class="btn btn-default" type="button" ng-click="page.memberLinkedHandler('addView')"><span class="glyphicon glyphicon-link"></span></button></span>
+								    <input type="hidden" ng-model="page.addView.model._entryModel['memberId']" />
+								</div>
+								<button type="button" class="btn btn-primary" ng-click="page.addView.model.entryModelList.push(page.addView.model._entryModel); page.addView.model._entryModel={};">添加</button>
+							</div>
+						</form>
+						<div class="alert alert-warning" role="alert" ng-if="page.addView.model.entryModelList.length == 0">暂无数据</div>
+						<table class="table" ng-if="page.addView.model.entryModelList.length > 0">
+							<thead>
+								<tr>
+									<th></th>
+									<th>编号</th>
+									<th>成员</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="entryModel in page.addView.model.entryModelList">
+									<td><button ng-click="page.addView.model.entryModelList.splice($index, 1)" type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+									<td>{{$index + 1}}</td>
+									<td>{{entryModel._memberId}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- ENTRIES END -->
 		</div>
 	</div>
 </div>
@@ -62,6 +99,30 @@
 			<form role="form" id="viewView">
 				<div class="container-fluid" ng-repeat="formControl in page.viewView.formControls" ng-include="'form-control-field'"></div>
 			</form>
+			<!-- ENTRIES START -->
+			<div class="container-fluid">
+				<div class="panel panel-default">
+					<div class="panel-heading"><h2>成员列表</h2></div>
+					<div class="panel-body">
+						<div class="alert alert-warning" role="alert" ng-if="page.viewView.model.entryModelList.length == 0">暂无数据</div>
+						<table class="table" ng-if="page.viewView.model.entryModelList.length > 0">
+							<thead>
+								<tr>
+									<th>编号</th>
+									<th>成员</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="entryModel in page.viewView.model.entryModelList">
+									<td>{{$index + 1}}</td>
+									<td>{{entryModel._memberId}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- ENTRIES END -->
 		</div>
 	</div>
 </div>
@@ -76,6 +137,43 @@
 			<form role="form" id="editView">
 				<div class="container-fluid" ng-repeat="formControl in page.editView.formControls" ng-include="'form-control-field'"></div>
 			</form>
+			<!-- ENTRIES START -->
+			<div class="container-fluid">
+				<div class="panel panel-default">
+					<div class="panel-heading"><h2>成员编辑</h2></div>
+					<div class="panel-body">
+						<form class="form-inline">
+							<div class="form-group">
+								<div class="input-group">
+								    <span class="input-group-addon">新成员</span>
+								    <input type="text" class="form-control" id="input-editView-user" ng-model="page.editView.model._entryModel['_memberId']" readonly />
+							        <span class="input-group-btn"><button class="btn btn-default" type="button" ng-click="page.memberLinkedHandler('editView')"><span class="glyphicon glyphicon-link"></span></button></span>
+								    <input type="hidden" ng-model="page.editView.model._entryModel['memberId']" />
+								</div>
+								<button type="button" class="btn btn-primary" ng-click="page.editView.model.entryModelList.push(page.editView.model._entryModel); page.editView.model._entryModel={};">添加</button>
+							</div>
+						</form>
+						<div class="alert alert-warning" role="alert" ng-if="page.editView.model.entryModelList.length == 0">暂无数据</div>
+						<table class="table" ng-if="page.editView.model.entryModelList.length > 0">
+							<thead>
+								<tr>
+									<th></th>
+									<th>编号</th>
+									<th>成员</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="entryModel in page.editView.model.entryModelList">
+									<td><button ng-click="page.editView.model.entryModelList.splice($index, 1)" type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+									<td>{{$index + 1}}</td>
+									<td>{{entryModel._memberId}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- ENTRIES END -->
 		</div>
 	</div>
 </div>

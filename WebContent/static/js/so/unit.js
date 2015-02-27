@@ -7,19 +7,34 @@ app.controller(moduleName + "-controller", function ($scope, $http) {
 	/*
 	 * View Model
 	 */
-	page.listView = new solib.PageViewModel("list");
-	page.addView = new solib.PageViewModel("add");
-	page.viewView = new solib.PageViewModel("view");
-	page.editView = new solib.PageViewModel("edit");
-	page.deleteView = new solib.PageViewModel("delete");
-	page.helpView = new solib.PageViewModel("help");
+	page.listView = new solib.PageView("list");
+	page.addView = new solib.PageView("add");
+	page.viewView = new solib.PageView("view");
+	page.editView = new solib.PageView("edit");
+	page.deleteView = new solib.PageView("delete");
+	page.helpView = new solib.PageView("help");
 
 	function unitLinkedHandler(currentView) {
 		$scope.control.openLinked('/rest/linked/unit', function (selectedItem) {
-			page[currentView].model._parentUnit = selectedItem.val;
-			page[currentView].model.parentUnit = selectedItem.name;
+			page[currentView].model._parentUnit  = selectedItem.val;
+			page[currentView].model.parentUnitId = selectedItem.name;
+			page[currentView].model.parentUnit   = selectedItem.name;
 		});
 	}
+
+	function memberLinkedHandler(currentView) {
+		$scope.control.openLinked('/rest/linked/member', function (selectedItem) {
+			var entryModel = page[currentView].model._entryModel || {};
+			page[currentView].model._entryModel = entryModel || {};
+			entryModel._memberId = selectedItem.val;
+			entryModel.memberId = selectedItem.name;
+		});
+	}
+	page.memberLinkedHandler = memberLinkedHandler;
+	page.addMember = function () {
+	};
+	page.removeMember = function () {
+	};
 
 	/*
 	 * Meta data for development-aid
@@ -27,10 +42,10 @@ app.controller(moduleName + "-controller", function ($scope, $http) {
 	page._validation =
 	{
 		"parentUnit": [solib.validation.required()],
-		"name"      : [solib.validation.required(), solib.validation.required(), solib.validation.stringMinLength(3), solib.validation.stringMaxLength(30), solib.validation.mustMatch(/^[\w ]+$/) ],
+		"name"      : [solib.validation.required(), solib.validation.stringMinLength(3), solib.validation.stringMaxLength(30), solib.validation.mustMatch(/^[\u4E00-\u9FFFa-z-]+$/i, "solib.validation.message.custom.chinese.alpha.num.strike.only")],
 		"status"    : [solib.validation.required()],
 		"category"  : [solib.validation.required()],
-		"remark"    : [solib.validation.required(), solib.validation.stringMinLength(100)]
+		"remark"    : [solib.validation.stringMaxLength(20)]
 	};
 	page._formControlRepository = 
 	{
@@ -109,7 +124,7 @@ app.controller(moduleName + "-controller", function ($scope, $http) {
 		if (page.listView.pagination && page.listView.pagination.currentPageNumber) {
 			uri = "/rest/" + moduleName + "/load/" + page.listView.pagination.currentPageNumber;
 		}
-		$http["get"](solib.uri(uri), page.addView.model)
+		$http["get"](solib.uri(uri))
 		.success(function(data, status, headers, config) {
 			page.listView.pagination = data.pagination;
 			page.listView.model = data.list;
@@ -118,7 +133,7 @@ app.controller(moduleName + "-controller", function ($scope, $http) {
 	}
 	page.addView.startAdd = function () {
 		page.formControlView = page.addView;
-		page.addView.model = { };
+		page.addView.model = new solib.EntityModel();
 		page.hideAllViews();
 		page.addView.visible = true;
 	};

@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/js/angular-loading-bar/loading-bar.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/js/angular-grid/ng-grid.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/js/angular-bootstrap-colorpicker/css/colorpicker.min.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/js/angular-chart.js/angular-chart.css">
 
     <!-- Custom styles for this template -->
     <link href="${pageContext.request.contextPath}/static/css/so/so.css" rel="stylesheet">
@@ -74,8 +75,11 @@
 	            <li><a href="${pageContext.request.contextPath}/lookup.entity"><spring:message code="global.lookup"/></a></li>
 	            <li><a href="${pageContext.request.contextPath}/news.entity"><spring:message code="global.news"/></a></li>
 	            <li><a href="${pageContext.request.contextPath}/event.entity"><spring:message code="global.event"/></a></li>
+	            <li><a href="${pageContext.request.contextPath}/privilege.entity"><spring:message code="global.privilege"/></a></li>
+	            <li><a href="${pageContext.request.contextPath}/role.entity"><spring:message code="global.role"/></a></li>
               </ul>
             </li>
+            <li><a href="${pageContext.request.contextPath}/report.entity">报表Demo</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -92,6 +96,8 @@
     <script src="${pageContext.request.contextPath}/static/js/underscore-min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/jquery.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/angular.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/Chart.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/angular-chart.js/angular-chart.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/angular-sanitize.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/angular-loading-bar/loading-bar.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/angular-wysiwyg/angular-wysiwyg.js"></script>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="selectRole" resultType="info.woody.so.bean.RoleBean">
+        select id          ,
+               roleName, roleDesc, roleStatus, 
+               createAt    ,
+               createBy    ,
+               updateAt    ,
+               updateBy
+		  from soRole
+		 order by createAt desc
+	</select>
+	<select id="selectRoleRowCount" resultType="int">
+		select count(1) from soRole
+	</select>
+
+	<insert id="insertRole" parameterType="info.woody.so.bean.RoleBean" useGeneratedKeys="true" keyProperty="id">
+		insert into soRole ( roleName, roleDesc, roleStatus )
+		values ( #{roleName, jdbcType=VARCHAR}, #{roleDesc, jdbcType=VARCHAR}, #{roleStatus, jdbcType=VARCHAR} )
+	</insert>
+
+	<update id="updateRole" parameterType="info.woody.so.bean.RoleBean">
+		update soRole
+		   set roleName   = #{roleName  , jdbcType=VARCHAR},
+               roleDesc   = #{roleDesc  , jdbcType=VARCHAR},
+               roleStatus = #{roleStatus, jdbcType=VARCHAR},
+		       updateAt = CURRENT_TIMESTAMP
+		 where id = #{id}
+	</update>
+
+	<delete id="deleteRole" parameterType="int">
+		delete from soRole where id = #{id}
+	</delete>
+</mapper>

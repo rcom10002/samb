@@ -1,6 +1,7 @@
 package info.woody.so.bean;
 
-public class UnitBean extends BaseBean {
+
+public class UnitBean extends BaseBeanWithEntry<UnitToMemberBean> {
 	
 	private String name    ;
 	private String status  ;
@@ -48,4 +49,6 @@ public class UnitBean extends BaseBean {
 	public void setParentUnitId(int parentUnitId) {
 		this.parentUnitId = parentUnitId;
 	}
+
+
 }

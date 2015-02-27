@@ -1,14 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <script type="text/javascript">
 	var solib = solib || { page: { } };
-	solib.angularModules = ['ui.bootstrap', 'chieffancypants.loadingBar', 'ngGrid', 'wysiwyg.module', 'ngSanitize'];
-	solib.PageViewModel = function (name, additional) {
-		this.name         = name;
-		this.model        = {};
-		this.formControls = {};
-		this.visible      = false;
-		this.validation   = {};
+	solib.angularModules = ['ui.bootstrap', 'chieffancypants.loadingBar', 'ngGrid', 'wysiwyg.module', 'ngSanitize', 'chart.js'];
+	solib.PageView = function (name, additional) {
+		this.name           = name;
+		this.model          = new solib.EntityModel();
+		this.formControls   = {};
+		this.visible        = false;
+		this.validation     = {};
 		solib.renew(this, additional);
+	};
+	solib.EntityModel = function () {
+		this._entryModel = {};
+		this.entryModelList = [];
 	};
 	solib.Page = function ($scope) {
 		solib.renew(solib.page, solib);
@@ -20,6 +24,9 @@
 		(function ($scope, page) {
 			function internalAudit(myView, disableAutoCheck) {
 				return function (newVal, oldVal) {
+					if (!page[myView]) {
+						return;
+					}
 					page[myView].isModelPerfect = true;
 					for (var item in page._formControlRepository) {
 						// synch the values between sock puppet and real model property
@@ -44,7 +51,6 @@
 						var found = page[myView].formControls.filter(function(e) { return (e.name == item) || (e.name == "_" + item); });
 						var errors = [];
 						if (found && found.length && found[0].check && found[0].check.length) {
-							//console.log(item, myView, page[myView].formControls, found);
 							for (var i in found[0].check) {
 								var checkResult = found[0].check[i](page[myView].model[item], page._formControlRepository[item]["label"]);
 								if (checkResult) {
@@ -313,11 +319,12 @@
 					return null;
 				}
 			},
-			mustMatch: function(regex) {
+			mustMatch: function(regex, message) {
+				message = solib.phrase(message);
 				if (regex && regex instanceof RegExp) {
 					return function (value, label) {
 						label = solib.phrase(label);
-						return regex.test(value) ? null : solib.phrase("solib.validation.message.common.must.match", label);
+						return regex.test(value) ? null : solib.phrase("solib.validation.message.common.must.match", label, message);
 					}
 				} else {
 					return function () { return null };

@@ -5,8 +5,13 @@
 <mapper namespace="info.woody.so">
 	<select id="selectUnit" resultType="info.woody.so.bean.UnitBean">
         select id          ,
-               soUnit.name, status, category, remark, parentUnit,
+               soUnit.name ,
+               status      ,
+               category    ,
+               remark      ,
+               parentUnit  ,
 		       soLinked.val as "_parentUnit"  ,
+               parentUnitId,
                createAt    ,
                createBy    ,
                updateAt    ,
@@ -15,10 +20,12 @@
 		  left join soLinked on (soUnit.parentUnitId = soLinked.name and soLinked.entity = 'unit')
 		 order by createAt desc
 	</select>
+
 	<select id="selectUnitRowCount" resultType="int">
 		select count(1) from soUnit
 	</select>
-	<select id="selectParentUnit" parameterType="int" resultType="info.woody.so.bean.UnitBean">
+
+	<select id="selectUnitById" parameterType="int" resultType="info.woody.so.bean.UnitBean">
         select id          ,
                name        ,
                status      ,
@@ -32,6 +39,22 @@
                updateBy
 		  from soUnit
 		 where id = #{id}
+	</select>
+
+	<select id="selectUnitsByParentUnit" parameterType="java.lang.String" resultType="info.woody.so.bean.UnitBean">
+        select id          ,
+               name        ,
+               status      ,
+               category    ,
+               remark      ,
+               parentUnit  ,
+               parentUnitId,
+               createAt    ,
+               createBy    ,
+               updateAt    ,
+               updateBy
+		  from soUnit
+		 where parentUnit like #{parentUnit} || '%'
 	</select>
 
 	<insert id="insertUnit" parameterType="info.woody.so.bean.UnitBean" useGeneratedKeys="true" keyProperty="id">
@@ -53,12 +76,12 @@
 
 	<update id="updateSubUnits" parameterType="info.woody.so.bean.UnitBean">
 		update soUnit
-		   set parentUnit   = #{newParentUnit},  
+		   set parentUnit   = REPLACE(parentUnit, #{oldParentUnit,jdbcType=VARCHAR}, #{newParentUnit,jdbcType=VARCHAR}),
 		       updateAt     = CURRENT_TIMESTAMP
 		 where parentUnit like #{oldParentUnit,jdbcType=VARCHAR} || '%'
 	</update>
 
-	<delete id="deleteUnit" parameterType="java.util.Map">
+	<delete id="deleteUnits" parameterType="java.util.Map">
 		delete from soUnit where id = #{id,jdbcType=INTEGER} or parentUnit like #{parentUnit,jdbcType=VARCHAR} || '%'
 	</delete> 
 </mapper>

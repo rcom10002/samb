@@ -19,7 +19,6 @@
 	<select class="form-control" ng-switch-when="select" ng-model="page.formControlView.model[formControl.name]" ng-options="option.name as option.val for option in page.lookup[formControl['select-source']]">
         <option value=""></option>
 	</select>
-<!--textarea-menu="{{yourModel.customMenu}}"-->
     <wysiwyg ng-switch-when="richtext" textarea-id="input-{{page.formControlView.name}}-{{formControl.name}}" textarea-class="form-control" textarea-height="100px" ng-model="page.formControlView.model[formControl.name]" enable-bootstrap-title="true"></wysiwyg>
 	<textarea class="form-control" ng-switch-when="textarea" id="input-{{page.formControlView.name}}-{{formControl.name}}" ng-model="page.formControlView.model[formControl.name]" />
     <span class="input-group" ng-switch-when="date">
@@ -55,7 +54,7 @@
     </ul>
 	<input class="form-control" ng-switch-when="lookuptext" type="text" id="input-{{page.formControlView.name}}-{{formControl.name}}" ng-value="page.lookupV(formControl.label, page.formControlView.model[formControl.name])" />
 	<input class="form-control" ng-switch-default type="text" id="input-{{page.formControlView.name}}-{{formControl.name}}" ng-model="page.formControlView.model[formControl.name]" />
-    <div style="white-space: pre-wrap;" class="alert alert-warning" ng-show="page.formControlView.validation[formControl.name].hasError" role="alert">{{page.formControlView.validation[formControl.name].errorMessage}}</div>
+    <div style="white-space: pre-wrap;" class="alert alert-danger" ng-show="page.formControlView.validation[formControl.name].hasError" role="alert">{{page.formControlView.validation[formControl.name].errorMessage}}</div>
     </div>
 </div>
 </script>
@@ -144,8 +143,3 @@
         </div>
     </div>
 </script>
-
-<!-- <button class="btn btn-default" ng-click="open()">Open me!</button> -->
-<!-- <button class="btn btn-default" ng-click="open('lg')">Large modal</button> -->
-<!-- <button class="btn btn-default" ng-click="open('sm')">Small modal</button> -->
-<!-- <div ng-show="selected">Selection from a modal: {{ selected }}</div> -->

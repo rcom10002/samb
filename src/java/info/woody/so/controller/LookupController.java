@@ -79,21 +79,5 @@ public class LookupController {
 		session.close();
 		return lookupList;
 	}
-//
-//	@RequestMapping(value="/linked/{entity}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
-//	public Page<LookupBean> queryEntityRecordsByKeyword(@PathVariable String entity, @RequestParam(required=false) String keyword) {
-//		return this.queryEntityRecordsByKeyword(entity, 1, keyword);
-//	}
-//
-//	@RequestMapping(value="/linked/{entity}/{pageNumber}", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
-//	public Page<LookupBean> queryEntityRecordsByKeyword(@PathVariable String entity, @PathVariable int pageNumber, @RequestParam(required=false) String keyword) {
-//		SqlSession session = sqlSessionFactory.openSession();
-//		int rowCount = session.selectOne("selectLinkedLookupRowCount-" + entity);
-//		Pagination pagination = new Pagination();
-//		InternalPagination internalPagination = pagination.new InternalPagination(pageNumber, rowCount);
-//		List<LookupBean> lookupList = session.selectList("selectLinkedLookup-" + entity, null, new RowBounds(internalPagination.getOffset(), internalPagination.getLimit()));
-//		Page<LookupBean> page = pagination.new Page<LookupBean>(lookupList);
-//		session.close();
-//		return page;
-//	}
+
 }

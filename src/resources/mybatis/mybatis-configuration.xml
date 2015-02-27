@@ -19,5 +19,9 @@
 		<mapper resource="/mybatis/mybatis-news-mapper.xml" />
 		<mapper resource="/mybatis/mybatis-event-mapper.xml" />
 		<mapper resource="/mybatis/mybatis-book-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-report-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-privilege-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-role-mapper.xml" />
+		<mapper resource="/mybatis/mybatis-unitToMember-mapper.xml" />
 	</mappers>
 </configuration>

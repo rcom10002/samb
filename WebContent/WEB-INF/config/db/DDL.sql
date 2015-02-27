@@ -1,4 +1,53 @@
 ------------------------------------------------------------------------------------------------
+DROP TABLE soPrivilege;
+
+CREATE TABLE soPrivilege
+(
+id       INTEGER      NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+name        VARCHAR(100) NOT NULL,
+source      VARCHAR(100) NOT NULL,
+description VARCHAR(1000) NOT NULL,
+control     VARCHAR(100) NOT NULL,
+status      VARCHAR(100) NOT NULL,
+createAt TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+createBy VARCHAR(100) NOT NULL DEFAULT 'soSys',
+updateAt TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+updateBy VARCHAR(100) NOT NULL DEFAULT 'soSys'
+);
+
+------------------------------------------------------------------------------------------------
+DROP TABLE soRole;
+
+CREATE TABLE soRole
+(
+id       INTEGER      NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+roleName   VARCHAR(100) NOT NULL,
+roleDesc   VARCHAR(500) NOT NULL,
+roleStatus VARCHAR(100) NOT NULL,
+createAt TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+createBy VARCHAR(100) NOT NULL DEFAULT 'soSys',
+updateAt TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+updateBy VARCHAR(100) NOT NULL DEFAULT 'soSys'
+);
+
+
+------------------------------------------------------------------------------------------------
+
+DROP TABLE soRoleToPrivilege;
+
+CREATE TABLE soRoleToPrivilege
+(
+id       INTEGER      NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+roleId      INTEGER NOT NULL,
+privilegeId INTEGER NOT NULL,
+createAt TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+createBy VARCHAR(100) NOT NULL DEFAULT 'soSys',
+updateAt TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+updateBy VARCHAR(100) NOT NULL DEFAULT 'soSys'
+);
+
+
+------------------------------------------------------------------------------------------------
 DROP TABLE soRequirement;
 
 CREATE TABLE soRequirement
@@ -39,27 +88,24 @@ updateBy VARCHAR(100) NOT NULL DEFAULT 'soSys'
 
 ------------------------------------------------------------------------------------------------
 DROP VIEW soLinked;
-
-CREATE VIEW soLinked(entity, name, val, weight) AS                                  
-SELECT 'requirement' AS entity,                                                               
-       id AS name,                                                                             
-       (corp || ', ' || cast(createAt as date) || ', ' || target || ', ' || position) AS val, 
-       TO_LONG(createAt) AS weight
-  FROM soRequirement                                                                   
- WHERE status = 'OPEN'                                                                 
- UNION
-SELECT 'unit',
-       id,
-       name,
-       LEN(parentUnit)
-  FROM soUnit                                                                 
- WHERE status = 'ACTIVE'
- ORDER BY entity, weight
---SELECT 'requirement',
---       id,
---       (corp || ', ' || cast(createAt as date) || ', ' || target || ', ' || position),
---       cast( substr(createAt || '', 1, 4) || substr(createAt || '', 6, 2) || substr(createAt || '', 9, 2) as integer)
---  FROM soRequirement;
+CREATE VIEW soLinked(entity, name, val, weight) AS                                                             
+  SELECT 'member' AS entity, id, username AS val, username AS weight FROM soUser 
+   UNION
+  SELECT 'requirement' AS entity,                                                                              
+         id,                                                                                                   
+         (corp || ', ' || cast(createAt as date) || ', ' || target || ', ' || position) AS val, corp AS weight 
+    FROM soRequirement                                                                                         
+   WHERE status = 'OPEN'                                                                                       
+   UNION                                                                                                       
+  SELECT 'unit' AS entity, id, val, weight FROM                                                                
+  (                                                                                                            
+  SELECT id, name AS val, parentUnit || '/' AS weight                                                          
+    FROM soUnit                                                                                                
+   WHERE status = 'ACTIVE'                                                                                     
+   UNION VALUES (0, '/', '')                                                                                   
+   ORDER BY 1, 3                                                                                               
+   ) T (id, val, weight)                                                                                       
+   ORDER BY 1, 4
 
 ------------------------------------------------------------------------------------------------
 DROP TABLE soUser;
@@ -101,6 +147,23 @@ updateBy VARCHAR(100) NOT NULL DEFAULT 'soSys'
 
 ALTER TABLE soUnit ADD COLUMN parentUnit VARCHAR(2000) NOT NULL DEFAULT '/';
 ALTER TABLE soUnit ADD COLUMN parentUnitId INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE soUnit DROP COLUMN remark;
+ALTER TABLE soUnit ADD COLUMN remark VARCHAR(100);
+
+------------------------------------------------------------------------------------------------
+
+DROP TABLE soUnitToMember;
+
+CREATE TABLE soUnitToMember
+(
+id       INTEGER      NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+unitId   INTEGER NOT NULL,
+memberId INTEGER NOT NULL,
+createAt TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+createBy VARCHAR(100) NOT NULL DEFAULT 'soSys',
+updateAt TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+updateBy VARCHAR(100) NOT NULL DEFAULT 'soSys'
+);
 
 ------------------------------------------------------------------------------------------------
 
@@ -287,37 +350,25 @@ EXTERNAL NAME 'info.woody.so.db.DerbyFunctionExt.regex_replace';
 
 
 
+CREATE VIEW soLinked(entity, name, val, weight) AS                                                      
+  SELECT 'requirement' AS entity,                                                                         
+         id,                                                                                              
+         (corp || ', ' || cast(createAt as date) || ', ' || target || ', ' || position) AS val, corp AS weight
+    FROM soRequirement                                                                                    
+   WHERE status = 'OPEN'                                                                                  
+   UNION                                                                                                  
+  SELECT 'unit' AS entity, id, val, weight FROM
+  (
+  SELECT id, name AS val, parentUnit || '/' AS weight
+    FROM soUnit
+   WHERE status = 'ACTIVE'
+   UNION VALUES (0, '/', '')
+   ORDER BY 1, 3
+   ) T (id, val, weight)
+   ORDER BY 1, 4                                                                                          
 
 
 
-
-insert into soRequirement (corp, location, target, manager, position, quantity, status, hr, comment)  values ( 'corp', 'location', 'target', 'manager', 'position', 0, 'status', 'hr', 'comment' )
-
-select corp, location, target, manager, position, quantity, status, hr, comment from soRequirement
-select * from soTracking;
-
-
-
-		select id              ,
-			   candidate       ,
-			   phone           ,
-			   hr              ,
-			   workLocation    ,
-			   skill           ,
-			   experience      ,
-			   language        ,
-			   employer        ,
-			   level           ,
-			   remarks         ,
-			   toSubmitResumeAt,
-			   interviewResult ,
-			   interviewTime   ,
-			   expectedSalary  ,
-			   createAt        ,
-			   createBy        ,
-			   updateAt        ,
-			   updateBy
-		  from soTracking
 
 		    SELECT id, val, weight FROM
 		    (
@@ -327,7 +378,7 @@ select * from soTracking;
 			 UNION VALUES (0, '/', 0)
 			 ORDER BY 1, 3
 			 ) T (id, val, weight)
-			 
+
 			 VALUES (0, '/', 0)
 
 			 SELECT COUNT(1) + 1

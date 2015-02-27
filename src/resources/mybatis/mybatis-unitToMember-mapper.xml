@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="selectUnitToMember" resultType="info.woody.so.bean.UnitToMemberBean">
+        select id          ,
+               unitId      ,
+               memberId    , 
+               createAt    ,
+               createBy    ,
+               updateAt    ,
+               updateBy
+		  from soUnitToMember
+		 order by createAt desc
+	</select>
+	<select id="selectUnitToMemberByUnit" parameterType="java.lang.Integer" resultType="info.woody.so.bean.UnitToMemberBean">
+        select soUnitToMember.id             ,
+               unitId                        ,
+               memberId                      ,
+               soUser.username as "_memberId",
+               soUnitToMember.createAt       ,
+               soUnitToMember.createBy       ,
+               soUnitToMember.updateAt       ,
+               soUnitToMember.updateBy
+		  from soUnitToMember
+		  join soUser on soUnitToMember.memberId = soUser.id
+		 where unitId = #{unitId}
+		 order by soUser.username desc
+	</select>
+	<select id="selectUnitToMemberRowCount" resultType="int">
+		select count(1) from soUnitToMember
+	</select>
+
+	<insert id="insertUnitToMember" parameterType="info.woody.so.bean.UnitToMemberBean" useGeneratedKeys="true" keyProperty="id">
+		insert into soUnitToMember ( unitId, memberId )
+		values ( #{unitId, jdbcType=INTEGER}, #{memberId, jdbcType=INTEGER} )
+	</insert>
+
+	<update id="updateUnitToMember" parameterType="info.woody.so.bean.UnitToMemberBean">
+		update soUnitToMember
+		   set unitId   = #{unitId  , jdbcType=INTEGER},
+		       memberId = #{memberId, jdbcType=INTEGER},
+		       updateAt = CURRENT_TIMESTAMP
+		 where id = #{id}
+	</update>
+
+	<delete id="deleteUnitToMember" parameterType="int">
+		delete from soUnitToMember where id = #{id}
+	</delete>
+
+	<delete id="deleteUnitToMemberByUnit" parameterType="int">
+		delete from soUnitToMember where unitId = #{unitId}
+	</delete>
+</mapper>

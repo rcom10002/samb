@@ -20,6 +20,7 @@ public class LookupTag extends SimpleTagSupport {
 
 	private static Map<String, List<LookupBean>> lookupListCache = new HashMap<String, List<LookupBean>>();
 	public static void reload(SqlSessionFactory sqlSessionFactory) {
+		lookupListCache.clear();
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		List<String> categoryList = sqlSession.selectList("selectLookupForCategoryOnly");
 		for (String category : categoryList) {

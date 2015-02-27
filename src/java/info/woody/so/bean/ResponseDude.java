@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ResponseDude {
 	private int messageCode;
 	private String messageText;
+	private Object payload;
 	public ResponseDude(int messageCode, String messageText) {
 		super();
 		this.messageCode = messageCode;
@@ -15,6 +16,12 @@ public class ResponseDude {
 	}
 	public String getMessageText() {
 		return messageText;
+	}
+	public Object getPayload() {
+		return payload;
+	}
+	public void setPayload(Object payload) {
+		this.payload = payload;
 	}
 	public static ResponseDude OK = new ResponseDude(HttpServletResponse.SC_OK, "rest.response.message.gone.ok");
 	public static ResponseDude INTERNAL_SERVER_ERROR = new ResponseDude(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "rest.response.message.goneinternal_server_error");

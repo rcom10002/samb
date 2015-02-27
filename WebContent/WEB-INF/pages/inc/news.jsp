@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/pages/inc/component/jsp-common-header.jsp" %>
 <c:set var="moduleKey" value="news"/> 
-<so:load-module-phrase module="news" />
+<so:load-module-phrase module="${moduleKey}" />
 <so:lookup category="news.category;" />
 <div role="tabpanel" class="tab-pane active" id="listView" ng-if="page.listView.visible">
 	<h1><spring:message code="${moduleKey}.listViewH1" /></h1>

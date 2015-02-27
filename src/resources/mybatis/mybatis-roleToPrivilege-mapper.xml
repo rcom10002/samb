@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="info.woody.so">
+	<select id="selectRoleToPrivilege" resultType="info.woody.so.bean.RoleToPrivilegeBean">
+        select id          ,
+               roleId      ,
+               privilegeId , 
+               createAt    ,
+               createBy    ,
+               updateAt    ,
+               updateBy
+		  from soRoleToPrivilege
+		 order by createAt desc
+	</select>
+	<select id="selectRoleToPrivilegeRowCount" resultType="int">
+		select count(1) from soRoleToPrivilege
+	</select>
+
+	<insert id="insertRoleToPrivilege" parameterType="info.woody.so.bean.RoleToPrivilegeBean" useGeneratedKeys="true" keyProperty="id">
+		insert into soRoleToPrivilege ( roleId, privilegeId )
+		values ( #{roleId, jdbcType=INTEGER}, #{privilegeId, jdbcType=INTEGER} )
+	</insert>
+
+	<update id="updateRoleToPrivilege" parameterType="info.woody.so.bean.RoleToPrivilegeBean">
+		update soRoleToPrivilege
+		   set roleId      = #{roleId     , jdbcType=INTEGER},
+               privilegeId = #{privilegeId, jdbcType=INTEGER},
+		       updateAt = CURRENT_TIMESTAMP
+		 where id = #{id}
+	</update>
+
+	<delete id="deleteRoleToPrivilege" parameterType="int">
+		delete from soRoleToPrivilege where id = #{id}
+	</delete>
+</mapper>

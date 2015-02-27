@@ -38,6 +38,7 @@ public class LoadModulePhraseTag extends TagSupport {
 			ReloadableResourceBundleMessageSource rrbms = (ReloadableResourceBundleMessageSource)wac.getBean("messageSource");
 			Locale locale = LocaleContextHolder.getLocale();
 			try {
+				// use script tag as a template container to present all related phrases
 				this.pageContext.getOut().println("<script type=\"text/so-phrase\">");
 				for (String phraseKey : phraseKeys) {
 					this.pageContext.getOut().println(String.format("%s=%s", phraseKey, rrbms.getMessage(phraseKey, null, locale)));
